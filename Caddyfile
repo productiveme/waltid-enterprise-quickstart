@@ -23,7 +23,8 @@ http://*.enterprise.localhost, http://enterprise.localhost {
 		reverse_proxy waltid-enterprise:3000
 	}
 	handle {
-		reverse_proxy waltid-enterprise-ui:3000
+		# No UI for e2e tests - return 404 for non-API routes
+		respond "Not Found" 404
 	}
 }
 

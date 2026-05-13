@@ -66,6 +66,7 @@ interface JourneyContext {
   workdir: string;
   tenantPath: string;
   orgBaseUrl: string;
+  orgServiceBaseUrl: string;  // Base URL for service creation (without port)
   walletKeyRef: string;
   iacaPem: string;
   docSignerPem: string;
@@ -564,6 +565,7 @@ class CompleteJourney {
       workdir: join(process.cwd(), `journey-test-${timestamp}`),
       tenantPath: `${config.organization}.${config.tenant}`,
       orgBaseUrl: `http://${config.organization}.${config.baseUrl.replace('http://', '')}:${config.port}`,
+      orgServiceBaseUrl: `http://${config.organization}.${config.baseUrl.replace('http://', '')}`,
       token: '',
       walletKeyRef: '',
       iacaPem: '',
@@ -759,7 +761,7 @@ class CompleteJourney {
     this.log('Create verifier2');
     const request = {
       type: 'verifier2',
-      baseUrl: this.ctx.orgBaseUrl,
+      baseUrl: this.ctx.orgServiceBaseUrl,
       clientId: VERIFIER2_CLIENT_ID,
     };
 
@@ -793,7 +795,7 @@ class CompleteJourney {
     
     const request = {
       type: 'verifier2',
-      baseUrl: this.ctx.orgBaseUrl,
+      baseUrl: this.ctx.orgServiceBaseUrl,
       clientId: VERIFIER2_CLIENT_ID,
       trustRegistryService: trustRegistryTarget,
     };
@@ -1627,7 +1629,7 @@ class CompleteJourney {
     }
     this.log(`Create verifier2 session with ${policiesDescription}`);
 
-    const vicalUrl = `${this.ctx.orgBaseUrl}/v1/${this.ctx.tenantPath}.${RESOURCES.vical}/vical-service-api/latest`;
+    const vicalUrl = `${this.ctx.orgServiceBaseUrl}/v1/${this.ctx.tenantPath}.${RESOURCES.vical}/vical-service-api/latest`;
 
     // Build the policies array
     const vcPolicies: any[] = [

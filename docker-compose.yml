@@ -91,6 +91,9 @@ services:
     image: caddy:2-alpine
     container_name: caddy
     restart: unless-stopped
+    environment:
+      - no_proxy=localhost,127.0.0.1,*.localhost,*.enterprise.localhost,waltid-enterprise,mongodb
+      - NO_PROXY=localhost,127.0.0.1,*.localhost,*.enterprise.localhost,waltid-enterprise,mongodb
     ports:
       - "80:80"
       - "443:443"
@@ -110,8 +113,10 @@ services:
 
   waltid-enterprise:
     image: waltid/waltid-enterprise-api:${ENTERPRISE_API_DOCKER_IMAGE_TAG}
-    # environment:
-    #   - LOG_LEVEL=trace
+    environment:
+      - no_proxy=localhost,127.0.0.1,*.localhost,*.enterprise.localhost,caddy,mongodb
+      - NO_PROXY=localhost,127.0.0.1,*.localhost,*.enterprise.localhost,caddy,mongodb
+      - JAVA_OPTS=-Dhttp.nonProxyHosts=localhost|127.0.0.1|*.localhost|*.enterprise.localhost|caddy|mongodb
     ports:
       - "3000:3000"
     volumes:
